@@ -1,0 +1,602 @@
+/* Main Layout Styles */
+body {
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    overflow-x: hidden;
+    color: #333;
+}
+
+/* Sidebar styles remain the same */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    position: fixed;
+    background: linear-gradient(to bottom, #2c3e50, #1a252f);
+    padding-top: 20px;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    transition: transform 0.3s ease;
+    left: 0;
+    top: 0;
+}
+
+.sidebar.hidden {
+    transform: translateX(-100%); /* Slides sidebar out of view */
+}
+
+/* Toggle button styling */
+.toggle-btn {
+    position: absolute;
+    top: 20px;
+    left: 290px; /* Adjust this based on sidebar width */
+    padding: 10px 15px;
+    background-color: #1a252f;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 101; /* Ensures button is above sidebar */
+}
+
+.toggle-btn:hover {
+    background-color: #2c3e50;
+}
+
+/* General button styling */
+.toggle-btn {
+    position: absolute;
+    top: 20px;
+    left: 250px; /* Adjust based on the sidebar width */
+    width: 40px;
+    height: 30px;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
+    z-index: 101;
+}
+
+/* Styling for burger lines */
+.toggle-btn span {
+    display: block;
+    width: 20px;
+    height: 4px;
+    background-color: #080808;
+    transition: all 0.3s ease;
+}
+
+/* Optional: Add hover effect */
+.toggle-btn:hover span {
+    background-color: #4d97ff;
+}
+
+/* Transform for "X" (if you want to animate the icon for open/close) */
+.toggle-btn.active span:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+}
+
+.toggle-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.toggle-btn.active span:nth-child(3) {
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+
+.content {
+    margin-left: 300px;
+    padding: 30px 40px;
+    transition: all 0.3s;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e1e5eb;
+    padding-bottom: 15px;
+}
+
+.page-header h2 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+    border: none;
+    transition: all 0.3s;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-weight: 600;
+    background-color: #fff;
+    border-bottom: 1px solid #e1e5eb;
+    padding: 16px 20px;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.stat-card {
+    position: relative;
+    padding-left: 25px;
+}
+
+.stat-card .icon-large {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+    font-size: 70px;
+    opacity: 0.15;
+}
+
+.stat-card .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-card .stat-label {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.stat-card .stat-change {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+}
+
+.stat-card .stat-change.positive {
+    color: #28a745;
+}
+
+.stat-card .stat-change.negative {
+    color: #dc3545;
+}
+
+/* Cemetery Map Styles */
+.cemetery-container {
+    width: 100%;
+    position: relative;
+    overflow: auto;
+    border: 1px solid #e1e5eb;
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 20px;
+    height: 650px;
+}
+
+.control-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: none;
+    gap: 15px;
+}
+
+.section-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.section-buttons .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.plot-legend {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: none;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #495057;
+}
+
+.color-box {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+.color-box.standard {
+    background-color: #4d97ff;
+}
+
+.color-box.cremation {
+    background-color: #ff7675;
+}
+
+.color-box.mausoleum {
+    background-color: #a29bfe;
+}
+
+.color-box.memorial {
+    background-color: #55efc4;
+}
+
+.color-box.available {
+    background-color: #f8f9fa;
+}
+
+/* Plot and Section Styles */
+.plot {
+    position: absolute;
+    border: 1px solid #747171;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+}
+
+.plot.standard {
+    background-color: #4d97ff;
+}
+
+.plot.cremation {
+    background-color: #ff7675;
+}
+
+.plot.mausoleum {
+    background-color: #a29bfe;
+}
+
+.plot.memorial {
+    background-color: #55efc4;
+}
+
+.plot.available {
+    background-color: #f8f9fa;
+}
+
+.plot:hover {
+    transform: scale(1.05);
+    /* Slightly grow */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.section {
+    position: absolute;
+    border: 2px solid #495057;
+    border-radius: 10px;
+}
+
+.section-label {
+    position: absolute;
+    font-weight: bold;
+    font-size: 14px;
+    color: #495057;
+}
+
+/* Tooltip Styles */
+.tooltip {
+    position: absolute;
+    background: #2c3e50;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: flex;
+    max-width: 280px;
+    font-size: 13px;
+    pointer-events: none;
+    opacity: 100;
+    transition: opacity 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+
+/* Table Styles */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.records-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-container {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+}
+
+.search-container i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.search-container input {
+    padding-left: 35px;
+    border-radius: 6px;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-top: none;
+    white-space: nowrap;
+}
+
+.table tbody td {
+    padding: 12px 16px;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(77, 151, 255, 0.05);
+}
+
+.table .badge {
+    padding: 6px 10px;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+/* Action Buttons */
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: 1px solid #e1e5eb;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    border-top: 1px solid #e1e5eb;
+    padding: 15px 20px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.form-control,
+.form-select {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #4d97ff;
+    box-shadow: 0 0 0 0.25rem rgba(77, 151, 255, 0.25);
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.pagination .page-item .page-link {
+    color: #4d97ff;
+    border-radius: 6px;
+    margin: 0 3px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4d97ff;
+    border-color: #4d97ff;
+}
+
+/* Additional Components */
+.filter-bar {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: none;
+}
+
+.filter-control {
+    min-width: 180px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 70px;
+    }
+
+    .sidebar .brand,
+    .sidebar a span {
+        display: none;
+    }
+
+    .sidebar a {
+        text-align: center;
+        padding: 15px 5px;
+    }
+
+    .sidebar a i {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .content {
+        margin-left: 90px;
+        padding: 20px;
+    }
+
+    .stat-card .stat-value {
+        font-size: 24px;
+    }
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: white;
+}
+
+.sidebar img {
+    margin-bottom: 0px;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 0;
+    width: 100%;
+    text-align: center;
+}
+
+.sidebar a:hover {
+    background-color: #555;
+}
+
+
+@media (max-width: 768px) {
+    .control-panel {
+        flex-direction: none;
+        align-items: none;
+    }
+
+    .plot-legend {
+        margin-top: 10px;
+    }
+
+    .records-header {
+        flex-direction: none;
+        align-items: none;
+        gap: 15px;
+    }
+
+    .search-container {
+        max-width: 100%;
+    }
+
+    .filter-bar {
+        flex-direction: none;
+        align-items: stretch;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Print Styles */
+@media print {
+
+    .sidebar,
+    .btn,
+    .no-print {
+        display: none !important;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 0;
+    }
+
+    .card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* ito yung css ng canvas wag nyo galawin iba takte yan*/
+
+#cemeteryCanvas {
+    background-image: url('LakeviewMap.png'); 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center;
+    border: 1px solid black; 
+}
+

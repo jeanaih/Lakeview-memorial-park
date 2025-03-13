@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cemetery Administration Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+</head>
+
+<div class="sidebar" id="sidebar">
+    <div class="brand">
+        <img src="bnw_logo.png.PNG" alt="Company Logo" width="200">
+        <h3 class="text-white text-center mb-4">Admin Panel</h3>
+    </div>
+    <a href="#dashboard" class="menu-item active"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a>
+    <a href="#cemetery-map" class="menu-item"><i class="bi bi-map me-2"></i>Cemetery Map</a>
+    <a href="#manage-graves" class="menu-item"><i class="bi bi-person-badge me-2"></i>Manage Records</a>
+    <a href="admin_inbox.html" class="menu-item"><i class="bi bi-file-earmark-text me-2"></i>Inbox</a>
+    <a href="#settings" class="menu-item"><i class="bi bi-gear me-2"></i>Settings</a>
+    <button id="toggleSidebar" class="toggle-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+</div>
+
+
+<div class="content">
+    <h2 class="mt-4 mb-4" id="dashboard">Dashboard</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Plots</h5>
+                    <p class="card-text display-4" id="totalPlots">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Available Plots</h5>
+                    <p class="card-text display-4" id="availablePlots">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Occupied Plots</h5>
+                    <p class="card-text display-4" id="occupiedPlots">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Records</h5>
+                    <p class="card-text display-4" id="recentRecords">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Plot Types Distribution</div>
+                <div class="card-body">
+                    <canvas id="plotTypesChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Occupancy by Section</div>
+                <div class="card-body">
+                    <canvas id="sectionOccupancyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mt-4 mb-4" id="cemetery-map">Cemetery Map</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="control-panel mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary active" id="viewAllSections">View
+                        All</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionA">Section A</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionB">Section B</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionC">Section C</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionD">Section D</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionE">Section E</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionF">Section F</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionG">Section G</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionH">Section H</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionI">Section I</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionJ">Section J</button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewSectionK">Section K</button>
+
+
+
+                </div>
+                <div class="plot-legend">
+                    <span class="legend-item"><span class="color-box standard"></span> Standard</span>
+                    <span class="legend-item"><span class="color-box columbarium"></span> Columbarium</span>
+                    <span class="legend-item"><span class="color-box mausoleum"></span> Mausoleum</span>
+                    <span class="legend-item"><span class="color-box memorial"></span> Memorial</span>
+                    <span class="legend-item"><span class="color-box available"></span> Available</span>
+                </div>
+            </div>
+            <div id="cemeteryMapContainer" class="cemetery-container">
+                <canvas id="cemeteryCanvas" width="2400" height="1300"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mt-4 mb-4" id="manage-graves">Manage Records</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRecordModal">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Record
+                </button>
+                <div class="float-end">
+                    <input type="text" class="form-control" id="searchRecords" placeholder="Search records...">
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Birth</th>
+                            <th>Death</th>
+                            <th>Section</th>
+                            <th>Plot</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="graveTableBody"></tbody>
+                </table>
+            </div>
+            <div class="pagination-controls text-center">
+                <nav>
+                    <ul class="pagination" id="recordsPagination">
+                        <!-- Pagination will be dynamically generated -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Record Modal -->
+<div class="modal fade" id="addRecordModal" tabindex="-1" aria-labelledby="addRecordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRecordModalLabel">Add/Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="recordForm">
+                    <input type="hidden" id="recordId">
+                    <div class="mb-3">
+                        <label for="recordName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="recordName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordBirth" class="form-label">Birth Date</label>
+                        <input type="date" class="form-control" id="recordBirth" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordDeath" class="form-label">Death Date</label>
+                        <input type="date" class="form-control" id="recordDeath" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordSection" class="form-label">Section</label>
+                        <select class="form-select" id="recordSection" required>
+                            <option value="">Select Section</option>
+                            <option value="A">Section A</option>
+                            <option value="B">Section B</option>
+                            <option value="C">Section C</option>
+                            <option value="D">Section D</option>
+                            <option value="E">Section E</option>
+                            <option value="F">Section F</option>
+                            <option value="G">Section G</option>
+                            <option value="H">Section H</option>
+                            <option value="I">Section I</option>
+                            <option value="J">Section J</option>
+                            <option value="K">Section K</option>
+
+
+
+                        </select>
+                    </div>
+
+
+
+                    <div class="mb-3">
+                        <label for="recordPlot" class="form-label">Plot</label>
+                        <select class="form-select" id="recordPlot" required>
+                            <option value="">Select Plot</option>
+                            <!-- Plot options will be dynamically populated -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recordType" class="form-label">Plot Type</label>
+                        <select class="form-select" id="recordType" required>
+                            <option value="">Select Type</option>
+                            <option value="standard">Standard</option>
+                            <option value="columbarium">Columbarium</option>
+                            <option value="mausoleum">Mausoleum</option>
+                            <option value="memorial">Memorial</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveRecord">Save Record</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("saveRecord").addEventListener("click", function () {
+        // Get form values
+        const recordId = document.getElementById("recordId").value; // ID of the record (hidden field)
+        const name = document.getElementById("recordName").value;
+        const birth = document.getElementById("recordBirth").value;
+        const death = document.getElementById("recordDeath").value;
+        const section = document.getElementById("recordSection").value;
+        const plot = document.getElementById("recordPlot").value;
+        const type = document.getElementById("recordType").value;
+
+        // Add/update logic
+        let message;
+        if (recordId) {
+            // If `recordId` exists, update the record
+            console.log(`Updating record with ID: ${recordId}`);
+            // Add your update logic here (e.g., find and update the record in data structure)
+            message = "Record successfully updated!";
+        } else {
+            // If `recordId` is empty, add a new record
+            console.log("Adding a new record...");
+            // Add your save logic here (e.g., insert into the data structure)
+            message = "Record successfully saved!";
+        }
+
+        // Close the modal
+        const modalElement = document.getElementById("addRecordModal");
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+
+        if (modalInstance) {
+            modalInstance.hide(); // This hides the modal
+        } else {
+            console.warn("No modal instance found.");
+        }
+
+        // Show success or update message
+        alert(message);
+    });
+</script>
+
+
+</script>
+
+<!-- Plot Details Modal -->
+<div class="modal fade" id="plotDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="plotDetailsTitle">Plot Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="plotDetailsBody">
+                <!-- Details will be populated dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="editPlotRecord">Edit Record</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="tooltip" class="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+</body>
+
+</html>

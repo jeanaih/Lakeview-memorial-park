@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Inbox</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body,
+        html {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            background-color: #f5f7fa;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #465669;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .compose-btn,
+        .dashboard-btn {
+            margin: 15px;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .dashboard-btn {
+            background-color: #2ecc71;
+            margin-top: 0;
+        }
+
+        .compose-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .dashboard-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .folders {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .folder-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: #ecf0f1;
+            transition: background-color 0.2s;
+        }
+
+        .folder-item:hover {
+            background-color: #34495e;
+        }
+
+        .folder-item.active {
+            background-color: #34495e;
+            border-left: 4px solid #3498db;
+        }
+
+        .folder-icon {
+            margin-right: 10px;
+        }
+
+        .folder-badge {
+            margin-left: auto;
+            background-color: #3498db;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .search-bar {
+            flex: 1;
+            margin: 0 15px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 10px 10px 35px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .action-icons {
+            display: flex;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            margin-left: 15px;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .inbox-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .message-list {
+            width: 35%;
+            border-right: 1px solid #ddd;
+            background-color: white;
+            overflow-y: auto;
+        }
+
+        .message-filters {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #555;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            background-color: white;
+        }
+
+        .message-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .message-item:hover {
+            background-color: #f5f7fa;
+        }
+
+        .message-item.active {
+            background-color: #ecf0f1;
+            border-left: 4px solid #3498db;
+        }
+
+        .message-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .sender {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .time {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .subject {
+            font-weight: 500;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-preview {
+            font-size: 0.85rem;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        .message-header {
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .message-subject {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .message-details {
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+
+        .message-info {
+            flex: 1;
+        }
+
+        .sender-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .message-meta {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .message-body {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .message-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-action-btn {
+            padding: 8px 15px;
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .message-action-btn:hover {
+            background-color: #eee;
+        }
+
+        .action-icon {
+            margin-right: 5px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #888;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+
+        .empty-message {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .logo,
+            .folder-text {
+                display: none;
+            }
+
+            .compose-btn,
+            .dashboard-btn {
+                padding: 10px;
+            }
+
+            .compose-text,
+            .dashboard-text {
+                display: none;
+            }
+
+            .message-list {
+                width: 100%;
+            }
+
+            .message-content {
+                display: none;
+            }
+
+            .message-content.active {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+            }
+
+            .back-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Welcome Back!</div>
+            </div>
+
+            <button class="dashboard-btn" id="dashboard-btn">
+                <span class="folder-icon">🏠</span>
+                <span class="dashboard-text">Back to Dashboard</span>
+            </button>
+
+            <button class="compose-btn">
+                <span class="folder-icon">✏️</span>
+                <span class="compose-text">Compose</span>
+            </button>
+
+            <div class="folders">
+                <div class="folder-item active">
+                    <span class="folder-icon">📥</span>
+                    <span class="folder-text">Inbox</span>
+                    <span class="folder-badge">14</span>
+                </div>
+                <div class="folder-item">
+                    <span class="folder-icon">⭐</span>
+                    <span class="folder-text">Starred</span>
+                </div>
+                <div class="folder-item">
+                    <span class="folder-icon">⏱️</span>
+                    <span class="folder-text">Snoozed</span>
+                </div>
+                <div class="folder-item">
+                    <span class="folder-icon">📨</span>
+                    <span class="folder-text">Sent</span>
+                </div>
+                <div class="folder-item">
+                    <span class="folder-icon">📝</span>
+                    <span class="folder-text">Drafts</span>
+                    <span class="folder-badge">2</span>
+                </div>
+                <div class="folder-item">
+                    <span class="folder-icon">🗑️</span>
+                    <span class="folder-text">Trash</span>
+                </div>
+                <div class="folder-item">
+                    <span class="folder-icon">🚫</span>
+                    <span class="folder-text">Spam</span>
+                </div>
+                <div class="folder-item">
+                    <span class="folder-icon">👥</span>
+                    <span class="folder-text">Teams</span>
+                </div>
+                <div class="folder-item">
+                    <span class="folder-icon">⚙️</span>
+                    <span class="folder-text">Settings</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search messages...">
+                </div>
+
+                <div class="action-icons">
+                    <button class="action-btn">📁</button>
+                    <button class="action-btn">🔄</button>
+                    <button class="action-btn">⚙️</button>
+                </div>
+            </div>
+
+            <!-- Inbox Container -->
+            <div class="inbox-container">
+                <!-- Message List -->
+                <div class="message-list">
+                    <div class="message-filters">
+                        <button class="filter-btn active">Primary</button>
+                        <button class="filter-btn">Social</button>
+                        <button class="filter-btn">Promotions</button>
+                    </div>
+
+                    <div id="messages-container">
+                        <!-- Messages will be added here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Message Content -->
+                <div class="message-content" id="message-content">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📬</div>
+                        <div class="empty-message">Select a message to read</div>
+                        <div>No message selected</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample message data
+        const messages = [
+            {
+                id: 1,
+                sender: "Alex Johnson",
+                email: "alex.johnson@example.com",
+                subject: "Project Update - Q1 2025 Marketing Strategy",
+                preview: "I've attached the latest presentation with our marketing strategy for Q1 2025. Please review it before our meeting tomorrow.",
+                body: `<p>Hi Team,</p>
+                       <p>I've attached the latest presentation with our marketing strategy for Q1 2025. Please review it before our meeting tomorrow at 10:00 AM.</p>
+                       <p>In this document, you'll find:</p>
+                       <ul>
+                        <li>Budget allocation for different channels</li>
+                        <li>Target KPIs for each department</li>
+                        <li>Timeline for major campaign launches</li>
+                        <li>Competitive analysis and market positioning</li>
+                       </ul>
+                       <p>If you have any questions or suggestions, please add comments directly to the document or reply to this email.</p>
+                       <p>Best regards,<br>Alex</p>`,
+                time: "10:30 AM",
+                date: "Mar 10, 2025",
+                isRead: false,
+                isStarred: true
+            },
+            {
+                id: 2,
+                sender: "Sarah Williams",
+                email: "sarah.williams@example.com",
+                subject: "Client Meeting Scheduled - Acme Corporation",
+                preview: "The meeting with Acme Corp has been confirmed for Wednesday at 2:00 PM. Please prepare the presentation for their new project requirements.",
+                body: `<p>Hi Team,</p>
+                       <p>I'm writing to confirm that our meeting with Acme Corporation has been scheduled for Wednesday, March 12, at 2:00 PM in Conference Room A.</p>
+                       <p>The client wants to discuss:</p>
+                       <ul>
+                        <li>New project requirements for their e-commerce platform</li>
+                        <li>Timeline adjustments for the ongoing mobile app development</li>
+                        <li>Budget revisions for Q2</li>
+                       </ul>
+                       <p>Please make sure to prepare the necessary materials and be ready to address any questions about our previous deliverables.</p>
+                       <p>Let me know if you have any conflicts or concerns.</p>
+                       <p>Thanks,<br>Sarah</p>`,
+                time: "9:15 AM",
+                date: "Mar 10, 2025",
+                isRead: false,
+                isStarred: false
+            },
+            {
+                id: 3,
+                sender: "Michael Chen",
+                email: "michael.chen@example.com",
+                subject: "Quarterly Financial Report - Ready for Review",
+                preview: "I've completed the quarterly financial report as requested. You'll find all the metrics we discussed along with preliminary projections for next quarter.",
+                body: `<p>Hello,</p>
+                       <p>I've completed the quarterly financial report as requested. You'll find all the metrics we discussed along with preliminary projections for next quarter.</p>
+                       <p>Key highlights:</p>
+                       <ul>
+                        <li>Revenue increased by 12.5% compared to last quarter</li>
+                        <li>Operating expenses were reduced by 5%</li>
+                        <li>Customer acquisition cost decreased from $85 to $72</li>
+                        <li>Profit margins improved across all product categories</li>
+                       </ul>
+                       <p>Please review the detailed spreadsheet and let me know if you need any clarification or additional information before our management presentation on Friday.</p>
+                       <p>Regards,<br>Michael</p>`,
+                time: "Yesterday",
+                date: "Mar 9, 2025",
+                isRead: true,
+                isStarred: false
+            },
+            {
+                id: 4,
+                sender: "Jennifer Lopez",
+                email: "jennifer.lopez@example.com",
+                subject: "HR Notice: New Employee Onboarding",
+                preview: "We're welcoming five new team members next Monday. Please help make them feel welcome and provide any assistance they might need during their first week.",
+                body: `<p>Dear Colleagues,</p>
+                       <p>I'm pleased to announce that we'll be welcoming five new team members starting next Monday, March 17, 2025:</p>
+                       <ul>
+                        <li>David Kim - Senior Developer (Engineering)</li>
+                        <li>Maria Garcia - UX Designer (Design)</li>
+                        <li>Robert Taylor - Marketing Specialist (Marketing)</li>
+                        <li>Lisa Wong - Data Analyst (Analytics)</li>
+                        <li>James Smith - Account Manager (Sales)</li>
+                       </ul>
+                       <p>Please help make them feel welcome and provide any assistance they might need during their first week. Department heads, please ensure their workstations are properly set up and that they have access to all necessary systems and resources.</p>
+                       <p>A welcome lunch will be held in the main cafeteria at noon on Monday.</p>
+                       <p>Thank you for your cooperation.</p>
+                       <p>Best regards,<br>Jennifer Lopez<br>HR Director</p>`,
+                time: "Yesterday",
+                date: "Mar 9, 2025",
+                isRead: true,
+                isStarred: false
+            },
+            {
+                id: 5,
+                sender: "Robert Davis",
+                email: "robert.davis@example.com",
+                subject: "Urgent: Server Maintenance Schedule",
+                preview: "We need to perform emergency maintenance on our main servers tonight. Please save all your work and expect downtime between 10 PM and 2 AM.",
+                body: `<p>URGENT NOTICE</p>
+                       <p>We need to perform emergency maintenance on our main servers tonight due to critical security vulnerabilities that need to be addressed immediately.</p>
+                       <p>Please:</p>
+                       <ul>
+                        <li>Save all your work before leaving today</li>
+                        <li>Complete any time-sensitive tasks before 9:30 PM</li>
+                        <li>Expect system downtime between 10:00 PM and 2:00 AM</li>
+                       </ul>
+                       <p>The IT team will be monitoring the situation closely to minimize disruption and ensure all systems are back online as quickly as possible.</p>
+                       <p>We apologize for the short notice and any inconvenience this may cause.</p>
+                       <p>If you have any urgent concerns, please contact the IT helpdesk at ext. 4567.</p>
+                       <p>Robert Davis<br>IT Infrastructure Manager</p>`,
+                time: "Mar 8",
+                date: "Mar 8, 2025",
+                isRead: true,
+                isStarred: true
+            }
+        ];
+
+        // Current selected message ID
+        let currentMessageId = null;
+
+        // Function to render all messages
+        function renderMessages() {
+            const messagesContainer = document.getElementById('messages-container');
+            messagesContainer.innerHTML = '';
+
+            messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.className = `message-item ${message.id === currentMessageId ? 'active' : ''} ${!message.isRead ? 'unread' : ''}`;
+                messageElement.dataset.id = message.id;
+                messageElement.innerHTML = `
+                    <div class="message-item-header">
+                        <div class="sender">${message.sender}</div>
+                        <div class="time">${message.time}</div>
+                    </div>
+                    <div class="subject">${message.subject}</div>
+                    <div class="message-preview">${message.preview}</div>
+                `;
+                messageElement.addEventListener('click', () => selectMessage(message.id));
+                messagesContainer.appendChild(messageElement);
+            });
+        }
+
+        // Function to render a single message content
+        function renderMessageContent(messageId) {
+            const message = messages.find(m => m.id === messageId);
+            const contentContainer = document.getElementById('message-content');
+
+            if (!message) {
+                contentContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📬</div>
+                        <div class="empty-message">Select a message to read</div>
+                        <div>No message selected</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Mark message as read
+            const index = messages.findIndex(m => m.id === messageId);
+            if (index !== -1) {
+                messages[index].isRead = true;
+            }
+
+            contentContainer.innerHTML = `
+                <div class="message-header">
+                    <h2 class="message-subject">${message.subject}</h2>
+                    <div class="message-details">
+                        <div class="avatar">${message.sender.charAt(0)}</div>
+                        <div class="message-info">
+                            <div class="sender-name">${message.sender}</div>
+                            <div class="message-meta">
+                                <span>${message.date} at ${message.time}</span>
+                                <span>To: me</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="message-body">
+                    ${message.body}
+                </div>
+                <div class="message-actions">
+                    <button class="message-action-btn">
+                        <span class="action-icon">↩️</span> Reply
+                    </button>
+                    <button class="message-action-btn">
+                        <span class="action-icon">↪️</span> Forward
+                    </button>
+                    <button class="message-action-btn">
+                        <span class="action-icon">🖨️</span> Print
+                    </button>
+                    <button class="message-action-btn">
+                        <span class="action-icon">🗑️</span> Delete
+                    </button>
+                </div>
+            `;
+        }
+
+        // Function to select a message
+        function selectMessage(messageId) {
+            currentMessageId = messageId;
+            renderMessages();
+            renderMessageContent(messageId);
+
+            // For responsive design - add active class to content
+            const contentContainer = document.getElementById('message-content');
+            contentContainer.classList.add('active');
+        }
+
+        // Initialize the app
+        function initApp() {
+            renderMessages();
+            renderMessageContent(null);
+
+            // Add event listeners for filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Add event listeners for folder items
+            const folderItems = document.querySelectorAll('.folder-item');
+            folderItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    folderItems.forEach(folder => folder.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Compose button event
+            const composeBtn = document.querySelector('.compose-btn');
+            composeBtn.addEventListener('click', function () {
+                alert('Compose functionality would go here!');
+            });
+
+            // Dashboard button event
+            const dashboardBtn = document.getElementById('dashboard-btn');
+            dashboardBtn.addEventListener('click', function () {
+                alert('Returning to dashboard...');
+                window.location.href = "index.html";
+            });
+        }
+
+        // Call init when the DOM is ready
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+
+</html>
